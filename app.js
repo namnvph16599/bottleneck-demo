@@ -1,24 +1,22 @@
 import express from 'express';
+import cors from 'cors';
+import morgan from 'morgan';
 import mongoose from 'mongoose';
-import dotenv from 'dotenv';
+
 const app = express();
-dotenv.config()
 
-//db connection
-mongoose.connect(
-    process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useCreateIndex: true
-}).then(() => console.log('DB Connected'))
+// middleware
+app.use(cors());
+app.use(morgan('tiny'));
+app.use(express.json())
 
-mongoose.connection.on('error', err => {
-    console.log(`DB connection error: ${err.message}`)
-});
-
-// Middleware
-app.use(express.json());
-
-const port = process.env.PORT || 8000
-app.listen(port, () => {
-    console.log(`Server is runing on port : ${port}`);
+// connnect database
+mongoose.connect('mongodb://localhost:27017/baithi')
+    .then(() => console.log("Kết nối db thành công"))
+    .catch((error) => console.log(error));
+    
+// connection
+const PORT = 8000;
+app.listen(PORT, () => {
+    console.log("Server is running port", PORT);
 })
